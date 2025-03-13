@@ -1,0 +1,121 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Structure for Student
+struct Student {
+    int roll;
+    char name[50];
+    float marks;
+    struct Student* next;
+};
+
+// Head pointer for the linked list
+struct Student* head = NULL;
+
+// Function to add a student
+void addStudent(int roll, char name[], float marks) {
+    struct Student* newStudent = (struct Student*)malloc(sizeof(struct Student));
+    newStudent->roll = roll;
+    strcpy(newStudent->name, name);
+    newStudent->marks = marks;
+    newStudent->next = head;
+    head = newStudent;
+    printf("Student added successfully!\n");
+}
+
+// Function to display all students
+void displayStudents() {
+    struct Student* temp = head;
+    if (temp == NULL) {
+        printf("No students found!\n");
+        return;
+    }
+    printf("\nList of Students:\n");
+    while (temp != NULL) {
+        printf("Roll No: %d, Name: %s, Marks: %.2f\n", temp->roll, temp->name, temp->marks);
+        temp = temp->next;
+    }
+}
+
+// Function to search for a student by roll number
+void searchStudent(int roll) {
+    struct Student* temp = head;
+    while (temp != NULL) {
+        if (temp->roll == roll) {
+            printf("Student Found: Roll No: %d, Name: %s, Marks: %.2f\n", temp->roll, temp->name, temp->marks);
+            return;
+        }
+        temp = temp->next;
+    }
+    printf("Student with Roll No %d not found!\n", roll);
+}
+
+// Function to delete a student by roll number
+void deleteStudent(int roll) {
+    struct Student* temp = head, *prev = NULL;
+    while (temp != NULL && temp->roll != roll) {
+        prev = temp;
+        temp = temp->next;
+    }
+
+    if (temp == NULL) {
+        printf("Student with Roll No %d not found!\n", roll);
+        return;
+    }
+
+    if (prev == NULL) { // Deleting the head node
+        head = temp->next;
+    } else {
+        prev->next = temp->next;
+    }
+
+    free(temp);
+    printf("Student deleted successfully!\n");
+}
+
+// Main function with menu
+int main() {
+    int choice, roll;
+    char name[50];
+    float marks;
+
+    while (1) {
+        printf("\nStudent Management System\n");
+        printf("1. Add Student\n2. Display Students\n3. Search Student\n4. Delete Student\n5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter Roll No: ");
+                scanf("%d", &roll);
+                printf("Enter Name: ");
+                scanf(" %[^\n]", name);
+                printf("Enter Marks: ");
+                scanf("%f", &marks);
+                addStudent(roll, name, marks);
+                break;
+            case 2:
+                displayStudents();
+                break;
+            case 3:
+                printf("Enter Roll No to search: ");
+                scanf("%d", &roll);
+                searchStudent(roll);
+                break;
+            case 4:
+                printf("Enter Roll No to delete: ");
+                scanf("%d", &roll);
+                deleteStudent(roll);
+                break;
+            case 5:
+                printf("Exiting program...\n");
+                exit(0);
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    }
+
+    return 0;
+}
